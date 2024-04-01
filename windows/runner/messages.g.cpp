@@ -420,6 +420,54 @@ Track Track::FromEncodableList(const EncodableList& list) {
   return decoded;
 }
 
+/// The codec used by MeditoAndroidAudioServiceManager.
+const flutter::StandardMessageCodec& MeditoAndroidAudioServiceManager::GetCodec() {
+  return flutter::StandardMessageCodec::GetInstance(&flutter::StandardCodecSerializer::GetInstance());
+}
+
+// Sets up an instance of `MeditoAndroidAudioServiceManager` to handle messages through the `binary_messenger`.
+void MeditoAndroidAudioServiceManager::SetUp(
+  flutter::BinaryMessenger* binary_messenger,
+  MeditoAndroidAudioServiceManager* api) {
+  {
+    BasicMessageChannel<> channel(binary_messenger, "dev.flutter.pigeon.Medito.MeditoAndroidAudioServiceManager.startService", &GetCodec());
+    if (api != nullptr) {
+      channel.SetMessageHandler([api](const EncodableValue& message, const flutter::MessageReply<EncodableValue>& reply) {
+        try {
+          std::optional<FlutterError> output = api->StartService();
+          if (output.has_value()) {
+            reply(WrapError(output.value()));
+            return;
+          }
+          EncodableList wrapped;
+          wrapped.push_back(EncodableValue());
+          reply(EncodableValue(std::move(wrapped)));
+        } catch (const std::exception& exception) {
+          reply(WrapError(exception.what()));
+        }
+      });
+    } else {
+      channel.SetMessageHandler(nullptr);
+    }
+  }
+}
+
+EncodableValue MeditoAndroidAudioServiceManager::WrapError(std::string_view error_message) {
+  return EncodableValue(EncodableList{
+    EncodableValue(std::string(error_message)),
+    EncodableValue("Error"),
+    EncodableValue()
+  });
+}
+
+EncodableValue MeditoAndroidAudioServiceManager::WrapError(const FlutterError& error) {
+  return EncodableValue(EncodableList{
+    EncodableValue(error.code()),
+    EncodableValue(error.message()),
+    error.details()
+  });
+}
+
 
 MeditoAudioServiceApiCodecSerializer::MeditoAudioServiceApiCodecSerializer() {}
 

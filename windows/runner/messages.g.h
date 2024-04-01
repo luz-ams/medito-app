@@ -47,6 +47,7 @@ template<class T> class ErrorOr {
   const FlutterError& error() const { return std::get<FlutterError>(v_); };
 
  private:
+  friend class MeditoAndroidAudioServiceManager;
   friend class MeditoAudioServiceApi;
   friend class MeditoAudioServiceCallbackApi;
   ErrorOr() = default;
@@ -74,6 +75,8 @@ class AudioData {
  private:
   static AudioData FromEncodableList(const flutter::EncodableList& list);
   flutter::EncodableList ToEncodableList() const;
+  friend class MeditoAndroidAudioServiceManager;
+  friend class MeditoAndroidAudioServiceManagerCodecSerializer;
   friend class MeditoAudioServiceApi;
   friend class MeditoAudioServiceApiCodecSerializer;
   friend class MeditoAudioServiceCallbackApi;
@@ -147,6 +150,8 @@ class PlaybackState {
  private:
   static PlaybackState FromEncodableList(const flutter::EncodableList& list);
   flutter::EncodableList ToEncodableList() const;
+  friend class MeditoAndroidAudioServiceManager;
+  friend class MeditoAndroidAudioServiceManagerCodecSerializer;
   friend class MeditoAudioServiceApi;
   friend class MeditoAudioServiceApiCodecSerializer;
   friend class MeditoAudioServiceCallbackApi;
@@ -188,6 +193,8 @@ class BackgroundSound {
   static BackgroundSound FromEncodableList(const flutter::EncodableList& list);
   flutter::EncodableList ToEncodableList() const;
   friend class PlaybackState;
+  friend class MeditoAndroidAudioServiceManager;
+  friend class MeditoAndroidAudioServiceManagerCodecSerializer;
   friend class MeditoAudioServiceApi;
   friend class MeditoAudioServiceApiCodecSerializer;
   friend class MeditoAudioServiceCallbackApi;
@@ -212,6 +219,8 @@ class Speed {
   static Speed FromEncodableList(const flutter::EncodableList& list);
   flutter::EncodableList ToEncodableList() const;
   friend class PlaybackState;
+  friend class MeditoAndroidAudioServiceManager;
+  friend class MeditoAndroidAudioServiceManagerCodecSerializer;
   friend class MeditoAudioServiceApi;
   friend class MeditoAudioServiceApiCodecSerializer;
   friend class MeditoAudioServiceCallbackApi;
@@ -261,6 +270,8 @@ class Track {
   flutter::EncodableList ToEncodableList() const;
   friend class AudioData;
   friend class PlaybackState;
+  friend class MeditoAndroidAudioServiceManager;
+  friend class MeditoAndroidAudioServiceManagerCodecSerializer;
   friend class MeditoAudioServiceApi;
   friend class MeditoAudioServiceApiCodecSerializer;
   friend class MeditoAudioServiceCallbackApi;
@@ -273,6 +284,27 @@ class Track {
 
 };
 
+// Generated interface from Pigeon that represents a handler of messages from Flutter.
+class MeditoAndroidAudioServiceManager {
+ public:
+  MeditoAndroidAudioServiceManager(const MeditoAndroidAudioServiceManager&) = delete;
+  MeditoAndroidAudioServiceManager& operator=(const MeditoAndroidAudioServiceManager&) = delete;
+  virtual ~MeditoAndroidAudioServiceManager() {}
+  virtual std::optional<FlutterError> StartService() = 0;
+
+  // The codec used by MeditoAndroidAudioServiceManager.
+  static const flutter::StandardMessageCodec& GetCodec();
+  // Sets up an instance of `MeditoAndroidAudioServiceManager` to handle messages through the `binary_messenger`.
+  static void SetUp(
+    flutter::BinaryMessenger* binary_messenger,
+    MeditoAndroidAudioServiceManager* api);
+  static flutter::EncodableValue WrapError(std::string_view error_message);
+  static flutter::EncodableValue WrapError(const FlutterError& error);
+
+ protected:
+  MeditoAndroidAudioServiceManager() = default;
+
+};
 class MeditoAudioServiceApiCodecSerializer : public flutter::StandardCodecSerializer {
  public:
   MeditoAudioServiceApiCodecSerializer();

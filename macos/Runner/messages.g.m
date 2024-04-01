@@ -226,6 +226,31 @@ static id GetNullableObjectAtIndex(NSArray *array, NSInteger key) {
 }
 @end
 
+NSObject<FlutterMessageCodec> *MeditoAndroidAudioServiceManagerGetCodec(void) {
+  static FlutterStandardMessageCodec *sSharedObject = nil;
+  sSharedObject = [FlutterStandardMessageCodec sharedInstance];
+  return sSharedObject;
+}
+
+void SetUpMeditoAndroidAudioServiceManager(id<FlutterBinaryMessenger> binaryMessenger, NSObject<MeditoAndroidAudioServiceManager> *api) {
+  {
+    FlutterBasicMessageChannel *channel =
+      [[FlutterBasicMessageChannel alloc]
+        initWithName:@"dev.flutter.pigeon.Medito.MeditoAndroidAudioServiceManager.startService"
+        binaryMessenger:binaryMessenger
+        codec:MeditoAndroidAudioServiceManagerGetCodec()];
+    if (api) {
+      NSCAssert([api respondsToSelector:@selector(startServiceWithError:)], @"MeditoAndroidAudioServiceManager api (%@) doesn't respond to @selector(startServiceWithError:)", api);
+      [channel setMessageHandler:^(id _Nullable message, FlutterReply callback) {
+        FlutterError *error;
+        [api startServiceWithError:&error];
+        callback(wrapResult(nil, error));
+      }];
+    } else {
+      [channel setMessageHandler:nil];
+    }
+  }
+}
 @interface MeditoAudioServiceApiCodecReader : FlutterStandardReader
 @end
 @implementation MeditoAudioServiceApiCodecReader

@@ -81,6 +81,15 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, copy, nullable) NSString * artistUrl;
 @end
 
+/// The codec used by MeditoAndroidAudioServiceManager.
+NSObject<FlutterMessageCodec> *MeditoAndroidAudioServiceManagerGetCodec(void);
+
+@protocol MeditoAndroidAudioServiceManager
+- (void)startServiceWithError:(FlutterError *_Nullable *_Nonnull)error;
+@end
+
+extern void SetUpMeditoAndroidAudioServiceManager(id<FlutterBinaryMessenger> binaryMessenger, NSObject<MeditoAndroidAudioServiceManager> *_Nullable api);
+
 /// The codec used by MeditoAudioServiceApi.
 NSObject<FlutterMessageCodec> *MeditoAudioServiceApiGetCodec(void);
 
